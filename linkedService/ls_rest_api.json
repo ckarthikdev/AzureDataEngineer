@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://www.quickpickdeal.com/api/Customer/GetAllCustomers",
+			"url": "https://www.quickpickdeal.com/api/Customer/GetCustomerById?id=2",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
