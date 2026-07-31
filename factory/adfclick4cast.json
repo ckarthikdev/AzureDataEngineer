@@ -1,0 +1,15 @@
+{
+	"name": "adfclick4cast",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "southindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "40ba5ec0-97cd-49ac-bbdd-5977cc8a5241",
+		"tenantId": "adae95a7-bb8e-4754-a369-32bd287de0cd"
+	}
+}

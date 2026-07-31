@@ -1,0 +1,302 @@
+{
+	"name": "PL_API_Pagination",
+	"properties": {
+		"activities": [
+			{
+				"name": "Until1",
+				"type": "Until",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('HasMoreData'),false)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Get Total Records",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"url": {
+									"value": "@concat(\r\npipeline().parameters.BaseURL,\r\n'/',\r\npipeline().parameters.Endpoint,\r\n'?limit=',\r\nstring(pipeline().parameters.Limit),\r\n'&skip=',\r\nstring(variables('Skip'))\r\n)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "TotalRecords",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get Total Records",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "TotalRecords",
+								"value": {
+									"value": "@activity('Get Total Records').output.total",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Set RecordCount",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_API_USERS",
+									"type": "DatasetReference",
+									"parameters": {
+										"RelativeURL": {
+											"value": "@concat(\npipeline().parameters.Endpoint,\n'?limit=',\nstring(pipeline().parameters.Limit),\n'&skip=',\nstring(variables('Skip'))\n)",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_adls_gen2_api",
+									"type": "DatasetReference",
+									"parameters": {
+										"FolderName": {
+											"value": "@pipeline().parameters.Endpoint",
+											"type": "Expression"
+										},
+										"FileName": {
+											"value": "@concat(\npipeline().parameters.Endpoint,\n'_',\nstring(variables('Skip')),\n'.json'\n)",
+											"type": "Expression"
+										},
+										"ContainerName": "bronze"
+									}
+								}
+							]
+						},
+						{
+							"name": "Check Data Exists",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Copy data1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@less(\nvariables('RecordCount'),\npipeline().parameters.Limit\n)",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Update HasMoreData",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "Update Skip",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "HasMoreData",
+											"value": true
+										}
+									},
+									{
+										"name": "Calculate Next Skip",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "NextSkip",
+											"value": {
+												"value": "@add(\nvariables('Skip'),\npipeline().parameters.Limit\n)",
+												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "Update Skip",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "Calculate Next Skip",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "Skip",
+											"value": {
+												"value": "@variables('NextSkip')",
+												"type": "Expression"
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Update the HasMoreData",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "HasMoreData",
+											"value": false
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Set RecordCount",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "TotalRecords",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "RecordCount",
+								"value": {
+									"value": "@length(activity('Get Total Records').output.users)",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			}
+		],
+		"parameters": {
+			"BaseURL": {
+				"type": "string",
+				"defaultValue": "https://dummyjson.com"
+			},
+			"Endpoint": {
+				"type": "string",
+				"defaultValue": "users"
+			},
+			"Limit": {
+				"type": "int",
+				"defaultValue": 100
+			}
+		},
+		"variables": {
+			"Skip": {
+				"type": "Integer",
+				"defaultValue": 0
+			},
+			"TotalRecords": {
+				"type": "Integer"
+			},
+			"HasMoreData": {
+				"type": "Boolean",
+				"defaultValue": true
+			},
+			"FileName": {
+				"type": "String",
+				"defaultValue": "\"\""
+			},
+			"NextSkip": {
+				"type": "Integer",
+				"defaultValue": 0
+			},
+			"RecordCount": {
+				"type": "Integer",
+				"defaultValue": 0
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-07-30T15:46:15Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

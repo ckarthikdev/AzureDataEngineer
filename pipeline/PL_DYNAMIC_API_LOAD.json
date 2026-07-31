@@ -1,0 +1,180 @@
+{
+	"name": "PL_DYNAMIC_API_LOAD",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Total Count",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": {
+						"value": "@concat(pipeline().parameters.apiBaseUrl, '/', pipeline().parameters.entityName, '?limit=100')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "totalRecords",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Total Count",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "totalRecords",
+					"value": {
+						"value": "@activity('Get Total Count').output.total",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "loop condition",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "totalRecords",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greaterOrEquals(variables('currentSkip'), variables('totalRecords'))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 2,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_api_products",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_adls_gen2_api",
+									"type": "DatasetReference",
+									"parameters": {
+										"FolderName": {
+											"value": "@pipeline().parameters.entityName",
+											"type": "Expression"
+										},
+										"FileName": {
+											"value": "@concat(pipeline().parameters.entityName, '_',\n  formatDateTime(utcnow(),'yyyy/MM/dd'), '.json')",
+											"type": "Expression"
+										},
+										"ContainerName": {
+											"value": "@pipeline().parameters.containerName",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			}
+		],
+		"parameters": {
+			"apiBaseUrl": {
+				"type": "string",
+				"defaultValue": "https://dummyjson.com"
+			},
+			"entityName": {
+				"type": "string",
+				"defaultValue": "products"
+			},
+			"pageSize": {
+				"type": "string",
+				"defaultValue": "20"
+			},
+			"apiKeySecretName": {
+				"type": "string",
+				"defaultValue": "api-url"
+			},
+			"containerName": {
+				"type": "string",
+				"defaultValue": "rawapi"
+			},
+			"loadDate": {
+				"type": "string",
+				"defaultValue": "@utcnow()"
+			}
+		},
+		"variables": {
+			"totalRecords": {
+				"type": "Integer"
+			},
+			"currentSkip": {
+				"type": "Integer"
+			},
+			"hasMoreData": {
+				"type": "Boolean"
+			},
+			"pageCounter": {
+				"type": "Integer"
+			},
+			"runId": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-07-30T15:47:19Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
