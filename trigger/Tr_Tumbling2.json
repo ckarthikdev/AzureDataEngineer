@@ -1,0 +1,29 @@
+{
+	"name": "Tr_Tumbling2",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipeline": {
+			"pipelineReference": {
+				"referenceName": "PL_INCREMENTAL_REST_API",
+				"type": "PipelineReference"
+			},
+			"parameters": {
+				"PL_Param_WST": "@trigger().outputs.windowStartTime",
+				"PL_Param_WET": "@trigger().outputs.windowEndTime"
+			}
+		},
+		"type": "TumblingWindowTrigger",
+		"typeProperties": {
+			"frequency": "Hour",
+			"interval": 24,
+			"startTime": "2026-07-27T00:00:00Z",
+			"delay": "00:00:00",
+			"maxConcurrency": 50,
+			"retryPolicy": {
+				"intervalInSeconds": 30
+			},
+			"dependsOn": []
+		}
+	}
+}

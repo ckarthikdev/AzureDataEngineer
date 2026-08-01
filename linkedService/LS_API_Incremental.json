@@ -1,10 +1,10 @@
 {
-	"name": "ls_rest_api",
+	"name": "LS_API_Incremental",
 	"properties": {
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://www.quickpickdeal.com/api/Customer/GetCustomerById?id=3",
+			"url": "https://www.searchapi.io/api/v1",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
