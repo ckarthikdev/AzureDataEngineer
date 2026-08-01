@@ -1,0 +1,26 @@
+{
+	"name": "DS_Rest_Incremental",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_API_Incremental",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"DS_Param_Start_Date": {
+				"type": "string"
+			},
+			"DS_Param_End_Date": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@concat('search?engine=google_news&q=latest+news&gl=in&time_period_min=',dataset().DS_Param_Start_Date,'&time_period_max=',dataset().DS_Param_End_Date,'&api_key=uwdXyFEUzosCiuy1Jm7eSk6G')",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
+}
