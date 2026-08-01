@@ -43,11 +43,11 @@
 			"type": "string",
 			"defaultValue": "https://www.quickpickdeal.com/api/Customer/GetCustomerById?id=3"
 		},
-		"Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WST": {
+		"Tr_ApI_Tumbling_properties_pipeline_parameters_PL_Param_WST": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowStartTime"
 		},
-		"Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WET": {
+		"Tr_ApI_Tumbling_properties_pipeline_parameters_PL_Param_WET": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowEndTime"
 		}
@@ -832,7 +832,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Tr_Tumbling1')]",
+			"name": "[concat(parameters('factoryName'), '/Tr_ApI_Tumbling')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -844,8 +844,8 @@
 						"type": "PipelineReference"
 					},
 					"parameters": {
-						"PL_Param_WST": "[parameters('Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WST')]",
-						"PL_Param_WET": "[parameters('Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WET')]"
+						"PL_Param_WST": "[parameters('Tr_ApI_Tumbling_properties_pipeline_parameters_PL_Param_WST')]",
+						"PL_Param_WET": "[parameters('Tr_ApI_Tumbling_properties_pipeline_parameters_PL_Param_WET')]"
 					}
 				},
 				"type": "TumblingWindowTrigger",

@@ -43,11 +43,11 @@
 			"type": "string",
 			"defaultValue": "https://www.quickpickdeal.com/api/Customer/GetCustomerById?id=3"
 		},
-		"Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WST": {
+		"Tr_ApI_Tumbling_properties_pipeline_parameters_PL_Param_WST": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowStartTime"
 		},
-		"Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WET": {
+		"Tr_ApI_Tumbling_properties_pipeline_parameters_PL_Param_WET": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowEndTime"
 		},
@@ -105,11 +105,11 @@
 					"ls_rest_api_properties_typeProperties_url": {
 						"value": "[parameters('ls_rest_api_properties_typeProperties_url')]"
 					},
-					"Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WST": {
-						"value": "[parameters('Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WST')]"
+					"Tr_ApI_Tumbling_properties_pipeline_parameters_PL_Param_WST": {
+						"value": "[parameters('Tr_ApI_Tumbling_properties_pipeline_parameters_PL_Param_WST')]"
 					},
-					"Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WET": {
-						"value": "[parameters('Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WET')]"
+					"Tr_ApI_Tumbling_properties_pipeline_parameters_PL_Param_WET": {
+						"value": "[parameters('Tr_ApI_Tumbling_properties_pipeline_parameters_PL_Param_WET')]"
 					}
 				}
 			},
