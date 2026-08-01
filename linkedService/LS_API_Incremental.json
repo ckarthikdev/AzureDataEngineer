@@ -1,0 +1,12 @@
+{
+	"name": "LS_API_Incremental",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://www.searchapi.io/api/v1/search",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
