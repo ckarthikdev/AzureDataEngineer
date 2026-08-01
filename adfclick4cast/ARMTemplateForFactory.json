@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adfclick4cast"
 		},
+		"LS_Adls_Gen2_Incremental_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_Adls_Gen2_Incremental'"
+		},
 		"ls_Adls_Gen2_token_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_Adls_Gen2_token'"
@@ -14,6 +18,14 @@
 		"ls_api_adls_gen2_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_api_adls_gen2'"
+		},
+		"LS_API_Incremental_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://www.searchapi.io/api/v1"
+		},
+		"LS_Adls_Gen2_Incremental_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://retaildatastorage01.dfs.core.windows.net/"
 		},
 		"ls_Adls_Gen2_token_properties_typeProperties_url": {
 			"type": "string",
@@ -29,7 +41,15 @@
 		},
 		"ls_rest_api_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://www.quickpickdeal.com/api/Customer/GetAllCustomers"
+			"defaultValue": "https://www.quickpickdeal.com/api/Customer/GetCustomerById?id=3"
+		},
+		"Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WST": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime"
+		},
+		"Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WET": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowEndTime"
 		}
 	},
 	"variables": {
@@ -348,6 +368,97 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/PL_INCREMENTAL_REST_API')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "@{concat('search?engine=google_news&q=latest+news&gl=in&time_period_min=',formatDateTime(pipeline().parameters.PL_Param_WST, 'MM/dd/yyyy'),'&time_period_max=',formatDateTime(pipeline().parameters.PL_Param_WET, 'MM/dd/yyyy'),'&api_key=uwdXyFEUzosCiuy1Jm7eSk6G')}"
+							},
+							{
+								"name": "Destination",
+								"value": "raw_data/@{concat('api-data/news-api/incremental', formatDateTime(utcnow(),'yyyy/MM/dd'))}/@{concat('latest_news', formatDateTime(utcnow(),'yyyyMMdd_HHmmss'), '.json')}"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Rest_Incremental",
+								"type": "DatasetReference",
+								"parameters": {
+									"DS_Param_Start_Date": {
+										"value": "@formatDateTime(pipeline().parameters.PL_Param_WST, 'MM/dd/yyyy')",
+										"type": "Expression"
+									},
+									"DS_Param_End_Date": {
+										"value": "@formatDateTime(pipeline().parameters.PL_Param_WET, 'MM/dd/yyyy')",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_Adls_Gen2_Incremental",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"PL_Param_WST": {
+						"type": "string"
+					},
+					"PL_Param_WET": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_Rest_Incremental')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Adls_Gen2_Incremental')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/PL_TOKEN_REST_API')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -394,7 +505,7 @@
 							"source": {
 								"type": "RestSource",
 								"httpRequestTimeout": "00:01:40",
-								"requestInterval": "00.00:00:00.030",
+								"requestInterval": "00.00:00:00.010",
 								"requestMethod": "GET",
 								"additionalHeaders": {
 									"Authorization": {
@@ -469,6 +580,68 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_api_url')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Adls_Gen2_Incremental')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Adls_Gen2_Incremental",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@concat('latest_news', formatDateTime(utcnow(),'yyyyMMdd_HHmmss'), '.json')",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat('api-data/news-api/incremental', formatDateTime(utcnow(),'yyyy/MM/dd'))",
+							"type": "Expression"
+						},
+						"fileSystem": "raw_data"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Adls_Gen2_Incremental')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Rest_Incremental')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_API_Incremental",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"DS_Param_Start_Date": {
+						"type": "string"
+					},
+					"DS_Param_End_Date": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "@concat('search?engine=google_news&q=latest+news&gl=in&time_period_min=',dataset().DS_Param_Start_Date,'&time_period_max=',dataset().DS_Param_End_Date,'&api_key=uwdXyFEUzosCiuy1Jm7eSk6G')",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_API_Incremental')]"
 			]
 		},
 		{
@@ -563,6 +736,38 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/LS_API_Incremental')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('LS_API_Incremental_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_Adls_Gen2_Incremental')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('LS_Adls_Gen2_Incremental_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('LS_Adls_Gen2_Incremental_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ls_Adls_Gen2_token')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -653,6 +858,62 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Tr_Tumbling')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Minute",
+					"interval": 15,
+					"startTime": "2026-08-01T11:54:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Tr_Tumbling2')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "PL_INCREMENTAL_REST_API",
+						"type": "PipelineReference"
+					},
+					"parameters": {
+						"PL_Param_WST": "[parameters('Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WST')]",
+						"PL_Param_WET": "[parameters('Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WET')]"
+					}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2026-07-27T00:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PL_INCREMENTAL_REST_API')]"
+			]
 		}
 	]
 }

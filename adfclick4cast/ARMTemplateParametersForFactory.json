@@ -5,11 +5,20 @@
 		"factoryName": {
 			"value": "adfclick4cast"
 		},
+		"LS_Adls_Gen2_Incremental_accountKey": {
+			"value": ""
+		},
 		"ls_Adls_Gen2_token_accountKey": {
 			"value": ""
 		},
 		"ls_api_adls_gen2_accountKey": {
 			"value": ""
+		},
+		"LS_API_Incremental_properties_typeProperties_url": {
+			"value": "https://www.searchapi.io/api/v1"
+		},
+		"LS_Adls_Gen2_Incremental_properties_typeProperties_url": {
+			"value": "https://retaildatastorage01.dfs.core.windows.net/"
 		},
 		"ls_Adls_Gen2_token_properties_typeProperties_url": {
 			"value": "https://retaildatastorage01.dfs.core.windows.net/"
@@ -21,7 +30,13 @@
 			"value": "https://dummyjson.com"
 		},
 		"ls_rest_api_properties_typeProperties_url": {
-			"value": "https://www.quickpickdeal.com/api/Customer/GetAllCustomers"
+			"value": "https://www.quickpickdeal.com/api/Customer/GetCustomerById?id=3"
+		},
+		"Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WST": {
+			"value": "@trigger().outputs.windowStartTime"
+		},
+		"Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WET": {
+			"value": "@trigger().outputs.windowEndTime"
 		}
 	}
 }

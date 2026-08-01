@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adfclick4cast"
 		},
+		"LS_Adls_Gen2_Incremental_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_Adls_Gen2_Incremental'"
+		},
 		"ls_Adls_Gen2_token_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_Adls_Gen2_token'"
@@ -14,6 +18,14 @@
 		"ls_api_adls_gen2_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_api_adls_gen2'"
+		},
+		"LS_API_Incremental_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://www.searchapi.io/api/v1"
+		},
+		"LS_Adls_Gen2_Incremental_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://retaildatastorage01.dfs.core.windows.net/"
 		},
 		"ls_Adls_Gen2_token_properties_typeProperties_url": {
 			"type": "string",
@@ -29,7 +41,15 @@
 		},
 		"ls_rest_api_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://www.quickpickdeal.com/api/Customer/GetAllCustomers"
+			"defaultValue": "https://www.quickpickdeal.com/api/Customer/GetCustomerById?id=3"
+		},
+		"Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WST": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime"
+		},
+		"Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WET": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowEndTime"
 		},
 		"containerUri": {
 			"type": "string",
@@ -58,11 +78,20 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"LS_Adls_Gen2_Incremental_accountKey": {
+						"value": "[parameters('LS_Adls_Gen2_Incremental_accountKey')]"
+					},
 					"ls_Adls_Gen2_token_accountKey": {
 						"value": "[parameters('ls_Adls_Gen2_token_accountKey')]"
 					},
 					"ls_api_adls_gen2_accountKey": {
 						"value": "[parameters('ls_api_adls_gen2_accountKey')]"
+					},
+					"LS_API_Incremental_properties_typeProperties_url": {
+						"value": "[parameters('LS_API_Incremental_properties_typeProperties_url')]"
+					},
+					"LS_Adls_Gen2_Incremental_properties_typeProperties_url": {
+						"value": "[parameters('LS_Adls_Gen2_Incremental_properties_typeProperties_url')]"
 					},
 					"ls_Adls_Gen2_token_properties_typeProperties_url": {
 						"value": "[parameters('ls_Adls_Gen2_token_properties_typeProperties_url')]"
@@ -75,6 +104,12 @@
 					},
 					"ls_rest_api_properties_typeProperties_url": {
 						"value": "[parameters('ls_rest_api_properties_typeProperties_url')]"
+					},
+					"Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WST": {
+						"value": "[parameters('Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WST')]"
+					},
+					"Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WET": {
+						"value": "[parameters('Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WET')]"
 					}
 				}
 			},
