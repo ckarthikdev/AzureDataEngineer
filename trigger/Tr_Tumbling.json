@@ -3,16 +3,6 @@
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Stopped",
-		"pipeline": {
-			"pipelineReference": {
-				"referenceName": "PL_INCREMENTAL_REST_API",
-				"type": "PipelineReference"
-			},
-			"parameters": {
-				"PL_Param_WST": "@trigger().outputs.window.StartTime",
-				"PL_Param_WET": "@trigger().outputs.window.EndTime"
-			}
-		},
 		"type": "TumblingWindowTrigger",
 		"typeProperties": {
 			"frequency": "Minute",
