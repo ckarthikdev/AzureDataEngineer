@@ -9,8 +9,8 @@
 				"type": "PipelineReference"
 			},
 			"parameters": {
-				"PL_Param_WST": "@trigger().output.window.StartTime",
-				"PL_Param_WET": "@trigger().output.window.EndTime"
+				"PL_Param_WST": "@trigger().outputs.window.StartTime",
+				"PL_Param_WET": "@trigger().outputs.window.EndTime"
 			}
 		},
 		"type": "TumblingWindowTrigger",

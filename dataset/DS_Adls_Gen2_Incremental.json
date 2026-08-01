@@ -15,7 +15,7 @@
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@concat('api-data/news-api/incremental', formatDateTime(utcnow(),'yyyyMMdd'))",
+					"value": "@concat('api-data/news-api/incremental', formatDateTime(utcnow(),'yyyy/MM/dd'))",
 					"type": "Expression"
 				},
 				"fileSystem": "raw_data"
