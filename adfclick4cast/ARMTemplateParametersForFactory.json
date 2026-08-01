@@ -32,10 +32,10 @@
 		"ls_rest_api_properties_typeProperties_url": {
 			"value": "https://www.quickpickdeal.com/api/Customer/GetCustomerById?id=3"
 		},
-		"Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WST": {
+		"Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WST": {
 			"value": "@trigger().outputs.windowStartTime"
 		},
-		"Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WET": {
+		"Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WET": {
 			"value": "@trigger().outputs.windowEndTime"
 		}
 	}

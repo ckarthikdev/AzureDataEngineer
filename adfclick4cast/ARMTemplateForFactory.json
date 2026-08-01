@@ -43,11 +43,11 @@
 			"type": "string",
 			"defaultValue": "https://www.quickpickdeal.com/api/Customer/GetCustomerById?id=3"
 		},
-		"Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WST": {
+		"Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WST": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowStartTime"
 		},
-		"Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WET": {
+		"Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WET": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowEndTime"
 		}
@@ -887,6 +887,28 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2026-07-27T00:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Tr_Tumbling1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
 				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
@@ -894,8 +916,8 @@
 						"type": "PipelineReference"
 					},
 					"parameters": {
-						"PL_Param_WST": "[parameters('Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WST')]",
-						"PL_Param_WET": "[parameters('Tr_Tumbling2_properties_pipeline_parameters_PL_Param_WET')]"
+						"PL_Param_WST": "[parameters('Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WST')]",
+						"PL_Param_WET": "[parameters('Tr_Tumbling1_properties_pipeline_parameters_PL_Param_WET')]"
 					}
 				},
 				"type": "TumblingWindowTrigger",
