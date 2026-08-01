@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://www.searchapi.io/api/v1/search",
+			"url": "https://www.searchapi.io/api/v1/",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
