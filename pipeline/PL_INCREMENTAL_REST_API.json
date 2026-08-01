@@ -13,7 +13,16 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "@{concat('search?engine=google_news&q=latest+news&gl=in&time_period_min=',formatDateTime(pipeline().parameters.PL_Param_WST, 'MM/dd/yyyy'),'&time_period_max=',formatDateTime(pipeline().parameters.PL_Param_WET, 'MM/dd/yyyy'),'&api_key=uwdXyFEUzosCiuy1Jm7eSk6G')}"
+					},
+					{
+						"name": "Destination",
+						"value": "raw_data/@{concat('api-data/news-api/incremental', formatDateTime(utcnow(),'yyyy/MM/dd'))}/@{concat('latest_news', formatDateTime(utcnow(),'yyyyMMdd_HHmmss'), '.json')}"
+					}
+				],
 				"typeProperties": {
 					"source": {
 						"type": "RestSource",
