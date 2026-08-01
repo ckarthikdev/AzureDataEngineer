@@ -5,56 +5,23 @@
 		"factoryName": {
 			"value": "adfclick4cast"
 		},
-		"LS_AdlsGen2_Retail_accountKey": {
+		"LS_Adls_Gen2_Incremental_accountKey": {
 			"value": ""
 		},
-		"LS_AzureSql_Retail_password": {
-			"value": ""
-		},
-		"LS_AzureSql_StoredProcedure_Retail_password": {
+		"ls_Adls_Gen2_token_accountKey": {
 			"value": ""
 		},
 		"ls_api_adls_gen2_accountKey": {
 			"value": ""
 		},
-		"ls_az_adls_gen2_dynamic_accountKey": {
-			"value": ""
+		"LS_API_Incremental_properties_typeProperties_url": {
+			"value": "https://www.searchapi.io/api/v1"
 		},
-		"ls_az_sql_db_dynamic_password": {
-			"value": ""
-		},
-		"ls_azure_sql_db_password": {
-			"value": ""
-		},
-		"ls_data_lake_gen2_accountKey": {
-			"value": ""
-		},
-		"ls_test_password": {
-			"value": ""
-		},
-		"LS_AdlsGen2_Retail_properties_typeProperties_url": {
+		"LS_Adls_Gen2_Incremental_properties_typeProperties_url": {
 			"value": "https://retaildatastorage01.dfs.core.windows.net/"
 		},
-		"LS_AzureSql_Retail_properties_typeProperties_server": {
-			"value": "click4cast.database.windows.net"
-		},
-		"LS_AzureSql_Retail_properties_typeProperties_database": {
-			"value": "free-sql-db"
-		},
-		"LS_AzureSql_Retail_properties_typeProperties_userName": {
-			"value": "click4cast"
-		},
-		"LS_AzureSql_StoredProcedure_Retail_properties_typeProperties_server": {
-			"value": "click4cast.database.windows.net"
-		},
-		"LS_AzureSql_StoredProcedure_Retail_properties_typeProperties_database": {
-			"value": "free-sql-db"
-		},
-		"LS_AzureSql_StoredProcedure_Retail_properties_typeProperties_userName": {
-			"value": "click4cast"
-		},
-		"ls_KeyVault_properties_typeProperties_baseUrl": {
-			"value": "https://api-url.vault.azure.net/"
+		"ls_Adls_Gen2_token_properties_typeProperties_url": {
+			"value": "https://retaildatastorage01.dfs.core.windows.net/"
 		},
 		"ls_api_adls_gen2_properties_typeProperties_url": {
 			"value": "https://retaildatastorage01.dfs.core.windows.net/"
@@ -62,38 +29,14 @@
 		"ls_api_url_properties_typeProperties_url": {
 			"value": "https://dummyjson.com"
 		},
-		"ls_az_adls_gen2_dynamic_properties_typeProperties_url": {
-			"value": "https://retaildatastorage01.dfs.core.windows.net/"
+		"ls_rest_api_properties_typeProperties_url": {
+			"value": "https://www.quickpickdeal.com/api/Customer/GetCustomerById?id=3"
 		},
-		"ls_az_sql_db_dynamic_properties_typeProperties_server": {
-			"value": "click4cast.database.windows.net"
+		"Tr_ApI_Tumbling_properties_pipeline_parameters_PL_Param_WST": {
+			"value": "@trigger().outputs.windowStartTime"
 		},
-		"ls_az_sql_db_dynamic_properties_typeProperties_database": {
-			"value": "free-sql-db"
-		},
-		"ls_az_sql_db_dynamic_properties_typeProperties_userName": {
-			"value": "click4cast"
-		},
-		"ls_azure_sql_db_properties_typeProperties_server": {
-			"value": "click4cast.database.windows.net"
-		},
-		"ls_azure_sql_db_properties_typeProperties_database": {
-			"value": "free-sql-db"
-		},
-		"ls_azure_sql_db_properties_typeProperties_userName": {
-			"value": "click4cast"
-		},
-		"ls_data_lake_gen2_properties_typeProperties_url": {
-			"value": "https://retaildatastorage01.dfs.core.windows.net/"
-		},
-		"ls_test_properties_typeProperties_server": {
-			"value": "click4cast.database.windows.net"
-		},
-		"ls_test_properties_typeProperties_database": {
-			"value": "free-sql-db"
-		},
-		"ls_test_properties_typeProperties_userName": {
-			"value": "click4cast"
+		"Tr_ApI_Tumbling_properties_pipeline_parameters_PL_Param_WET": {
+			"value": "@trigger().outputs.windowEndTime"
 		},
 		"containerUri": {
 			"value": ""
