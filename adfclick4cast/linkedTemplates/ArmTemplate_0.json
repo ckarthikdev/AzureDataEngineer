@@ -255,7 +255,7 @@
 							"value": "@concat('api-data/news-api/incremental', formatDateTime(utcnow(),'yyyy/MM/dd'))",
 							"type": "Expression"
 						},
-						"fileSystem": "raw_data"
+						"fileSystem": "raw-data"
 					}
 				},
 				"schema": {}
